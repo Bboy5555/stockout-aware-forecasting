@@ -50,6 +50,9 @@ def build_daily(save=True):
     daily = pd.concat(frames, ignore_index=True)
     daily["dt"] = pd.to_datetime(daily["dt"])
     daily["series_id"] = _series_id(daily["store_id"], daily["product_id"])
+    # Data fix: discount = 0 appears on 0.36% of rows with high sales, so treat it as missing
+    daily["discount_missing"] = (daily["discount"] == 0).astype("int8")
+    daily.loc[daily["discount"] == 0, "discount"] = np.nan
     daily = daily.sort_values(["series_id", "dt"]).reset_index(drop=True)
     if save:
         PROC_DIR.mkdir(parents=True, exist_ok=True)
