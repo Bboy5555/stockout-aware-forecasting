@@ -14,7 +14,13 @@ import pandas as pd
 import pyarrow.parquet as pq
 
 REPO_ID = "Dingdong-Inc/FreshRetailNet-50K"
-DRIVE_DIR = Path("/content/drive/MyDrive/Stockout Project Data")
+# The data folder sits in a different place for each person, so use the first one that exists
+_CANDIDATES = [
+    "/content/drive/MyDrive/MIS 382 Deep Learning and ML/Final Project/Stockout Project Data",  # Melisa
+    "/content/drive/MyDrive/Final Project/Stockout Project Data",  # teammates with a shortcut to Final Project
+    "/content/drive/MyDrive/Stockout Project Data",  # teammates with a shortcut to the data folder only
+]
+DRIVE_DIR = next((Path(p) for p in _CANDIDATES if Path(p).exists()), Path(_CANDIDATES[0]))
 RAW_DIR = DRIVE_DIR / "raw"
 PROC_DIR = DRIVE_DIR / "processed"
 HOURLY_COLS = ["hours_sale", "hours_stock_status"]
