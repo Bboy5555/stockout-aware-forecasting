@@ -15,6 +15,8 @@ MIS 382N term project. Data: [FreshRetailNet-50K](https://huggingface.co/dataset
 |---|---|
 | `daily_model.parquet` | One row per product per day (4.85M rows). **Use this for modeling.** |
 | `sample_ids.csv` | The 2,000 products used for heavy models |
+| `daily_demand_v1.parquet` | Corrected daily demand for the 2,000-product sample: `sales`, estimated `demand`, `lost_demand`, `oos_hours`, `set`. **Use this for forecasting on corrected demand and for the simulator.** |
+| `hourly_demand_v1.parquet` | Same, by hour (selling hours 6:00 to 22:00): `sales`, `out_of_stock`, `demand_est`, `demand`, `lost_demand` |
 | `daily.parquet` | Cleaned daily table without the modeling columns |
 
 Hourly data: `load_hourly(series_ids)`. Load only the products you need (all 50,000 is about 116M rows).
@@ -39,3 +41,4 @@ Never train on validation or test dates.
 - **Only edit your own notebooks.** Ask before changing files in `src/`.
 - Sales in the 2 hours before a stockout run **1.79x** normal, so a plain historical average underestimates missed demand (relevant for Stream 2).
 - List any pretrained model or borrowed code you use, for the report's disclosure section.
+- - **Corrected demand v1:** empty-shelf hours are filled with the average of a LightGBM and an LSTM model (62% error, no bias on the masking test). Stockouts hide about 21% of demand; on stockout days, true demand is about 45% above recorded sales. Details in `notebooks/missed_demand.ipynb`.
